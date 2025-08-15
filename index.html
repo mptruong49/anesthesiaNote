@@ -834,15 +834,23 @@
             const resultsGrid = document.getElementById('resultsGrid');
             resultsGrid.innerHTML = '';
 
-            // Calculate the applicable MRD for safety comparison
+            // Calculate the applicable MRD for safety comparison (smallest effective limit)
             let applicableMRD = Infinity;
             let applicableMRDInfo = "";
+            
+            // Calculate patient's weight-based MRD (smallest weight-based MRD from used anesthetics)
+            let patientWeightBasedMRD = Infinity;
             
             usedAnesthetics.forEach(type => {
                 const anesthetic = anesthetics[type];
                 const weightBasedMRD = weightInKg * anesthetic.mrdPerKg;
                 
-                // For each anesthetic, determine the effective MRD (smaller of weight-based or absolute)
+                // Track the smallest weight-based MRD for "Patient's MRD"
+                if (weightBasedMRD < patientWeightBasedMRD) {
+                    patientWeightBasedMRD = weightBasedMRD;
+                }
+                
+                // For safety comparison, use the effective MRD (smaller of weight-based or absolute)
                 let effectiveMRD;
                 if (anesthetic.absoluteMRD !== null) {
                     effectiveMRD = Math.min(weightBasedMRD, anesthetic.absoluteMRD);
@@ -850,7 +858,7 @@
                     effectiveMRD = weightBasedMRD;
                 }
                 
-                // Track the smallest effective MRD across all used anesthetics
+                // Track the smallest effective MRD across all used anesthetics for safety
                 if (effectiveMRD < applicableMRD) {
                     applicableMRD = effectiveMRD;
                     if (anesthetic.absoluteMRD !== null && anesthetic.absoluteMRD < weightBasedMRD) {
@@ -874,7 +882,7 @@
                 </div>
             `;
 
-            // 2. Applicable MRD (the limiting factor)
+            // 2. Applicable MRD (the limiting factor for safety)
             resultsGrid.innerHTML += `
                 <div class="result-card">
                     <h4>Applicable MRD</h4>
@@ -927,10 +935,10 @@
             checkDetailedSafety(totalAnestheticMg, applicableMRD, totals.epinephrine, epinephrineLimit, anestheticOverLimit, epiOverLimit);
             
             // Generate note template
-            generateNoteTemplate(weightInKg, usedAnesthetics, totals, applicableMRD, totalAnestheticMg);
+            generateNoteTemplate(weightInKg, usedAnesthetics, totals, applicableMRD, patientWeightBasedMRD, totalAnestheticMg);
         }
 
-        function generateNoteTemplate(weightInKg, usedAnesthetics, totals, applicableMRD, totalAnestheticMg) {
+        function generateNoteTemplate(weightInKg, usedAnesthetics, totals, applicableMRD, patientWeightBasedMRD, totalAnestheticMg) {
             // Build anesthetic list
             let anestheticList = [];
             usedAnesthetics.forEach(type => {
@@ -966,7 +974,7 @@ Negative Aspirations on all injections
 
 Anesthetic Administered: ${anestheticList.join(', ')}
 Absolute MRD: ${absoluteMRD === "N/A" ? "N/A" : absoluteMRD + " mg"}
-Pt MRD: ${applicableMRD.toFixed(1)} mg
+Pt MRD: ${patientWeightBasedMRD.toFixed(1)} mg
 Total amount administered for the appointment (in mg): ${totalAnestheticMg.toFixed(1)} mg
 
 Pt Reaction: 
