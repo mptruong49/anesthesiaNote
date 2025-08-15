@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dental Anesthesia Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 25%, #2d1b69 50%, #5b2c87 75%, #b83280 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 24px;
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 48px;
+        }
+
+        .patient-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+            padding: 32px;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 0; /* Allows flex items to shrink */
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            color: #f1f5f9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input, .form-group select {
+            padding: 16px 20px;
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(51, 65, 85, 0.6);
+            color: #f1f5f9;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            min-width: 0;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            background: rgba(51, 65, 85, 0.8);
+        }
+
+        .form-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        .anesthetic-section {
+            margin-bottom: 32px;
+            padding: 28px;
+            border: 2px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(51, 65, 85, 0.9) 100%);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(20px);
+        }
+
+        .anesthetic-section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .anesthetic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .anesthetic-header h3 {
+            color: #f1f5f9;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .remove-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .remove-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(220, 38, 38, 0.3);
+        }
+
+        .anesthetic-inputs {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 20px;
+            align-items: end;
+        }
+
+        .anesthetic-inputs select, .anesthetic-inputs input {
+            padding: 16px 20px;
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(51, 65, 85, 0.6);
+            color: #f1f5f9;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            min-width: 0;
+        }
+
+        .anesthetic-inputs select:focus, .anesthetic-inputs input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .add-btn {
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            margin: 24px auto;
+            padding: 18px 32px;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(5, 150, 105, 0.3);
+        }
+
+        .calculate-btn {
+            display: block;
+            width: 100%;
+            max-width: 480px;
+            margin: 40px auto;
+            padding: 20px 48px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(59, 130, 246, 0.4);
+        }
+
+        .results {
+            margin-top: 48px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.95) 100%);
+            border-radius: 20px;
+            border: 2px solid rgba(148, 163, 184, 0.1);
+            backdrop-filter: blur(20px);
+        }
+
+        .results h2 {
+            text-align: center;
+            margin-bottom: 32px;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .result-card {
+            background: rgba(51, 65, 85, 0.6);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .result-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .result-card h4 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            color: #cbd5e1;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #60a5fa;
+        }
+
+        .patient-weight-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .patient-weight-card .result-value {
+            color: #60a5fa;
+        }
+
+        .total-anesthetic-card {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            border: 2px solid rgba(124, 58, 237, 0.3);
+        }
+
+        .total-anesthetic-card .result-value {
+            color: #ffffff;
+        }
+
+        .warning {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 20px 24px;
+            border-radius: 12px;
+            margin-top: 24px;
+            font-weight: 600;
+            text-align: center;
+            animation: pulse 2s infinite;
+            border: 1px solid rgba(220, 38, 38, 0.5);
+        }
+
+        .safe {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            animation: none;
+            border: 1px solid rgba(5, 150, 105, 0.5);
+        }
+
+        .safe .result-value {
+            color: #ffffff;
+        }
+
+        .over-limit {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border: 2px solid rgba(220, 38, 38, 0.5);
+        }
+
+        .over-limit .result-value {
+            color: #fef2f2;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .content {
+                padding: 24px;
+            }
+            
+            .patient-info {
+                grid-template-columns: 1fr;
+                padding: 24px;
+            }
+            
+            .anesthetic-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+
+            .header {
+                padding: 24px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .patient-info {
+                padding: 20px;
+                gap: 16px;
+                grid-template-columns: 1fr;
+            }
+
+            .anesthetic-section {
+                padding: 20px;
+                margin-bottom: 24px;
+            }
+
+            .anesthetic-inputs {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .form-group input, 
+            .form-group select, 
+            .anesthetic-inputs select, 
+            .anesthetic-inputs input {
+                padding: 14px 16px;
+                font-size: 16px; /* Prevents zoom on iOS */
+                min-width: 0; /* Allows flex shrinking */
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            .form-group label {
+                font-size: 0.85rem;
+                margin-bottom: 8px;
+            }
+
+            .anesthetic-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .anesthetic-header h3 {
+                font-size: 1.2rem;
+            }
+
+            .remove-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+                align-self: flex-end;
+            }
+
+            .add-btn {
+                padding: 16px 24px;
+                font-size: 1rem;
+                margin: 20px auto;
+            }
+
+            .calculate-btn {
+                padding: 18px 32px;
+                font-size: 1.1rem;
+                margin: 32px auto;
+            }
+
+            .results {
+                padding: 24px 20px;
+            }
+
+            .results h2 {
+                font-size: 1.8rem;
+                margin-bottom: 24px;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .result-card {
+                padding: 20px;
+            }
+
+            .result-card h4 {
+                font-size: 0.9rem;
+            }
+
+            .result-value {
+                font-size: 1.4rem;
+            }
+
+            .warning {
+                padding: 16px 20px;
+                font-size: 0.9rem;
+            }
+
+            #convertedWeight {
+                font-size: 0.8rem;
+                margin-top: 6px;
+            }
+        }
+
+        @media (max-width: 390px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                border-radius: 16px;
+            }
+
+            .header {
+                padding: 20px 16px;
+            }
+
+            .content {
+                padding: 16px;
+            }
+
+            .patient-info {
+                padding: 16px;
+                margin-bottom: 24px;
+            }
+
+            .anesthetic-section {
+                padding: 16px;
+            }
+
+            .results {
+                padding: 20px 16px;
+            }
+
+            .form-group input, 
+            .form-group select, 
+            .anesthetic-inputs select, 
+            .anesthetic-inputs input {
+                padding: 12px 14px;
+                font-size: 16px;
+                border-radius: 8px;
+            }
+
+            .add-btn, .calculate-btn {
+                max-width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>🦷 Dental Anesthesia Calculator</h1>
+                <p>Advanced dosing calculations for safe anesthesia administration</p>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="patient-info">
+                <div class="form-group">
+                    <label for="weightUnit">Weight Unit</label>
+                    <select id="weightUnit" onchange="updateWeightLabel()">
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="lb">Pounds (lb)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="patientWeight" id="weightLabel">Patient Weight (kg)</label>
+                    <input type="number" id="patientWeight" min="1" max="440" step="0.1" placeholder="Enter weight" oninput="getWeightInKg()">
+                    <small id="convertedWeight" style="color: #94a3b8; font-style: italic; margin-top: 8px; display: none;"></small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cardiacStatus">Patient Status</label>
+                    <select id="cardiacStatus">
+                        <option value="normal">Normal (0.2mg epi limit)</option>
+                        <option value="cardiac">Cardiac (0.04mg epi limit)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="anestheticsContainer">
+                <div class="anesthetic-section">
+                    <div class="anesthetic-header">
+                        <h3>Anesthetic #1</h3>
+                    </div>
+                    <div class="anesthetic-inputs">
+                        <div class="form-group">
+                            <label>Anesthetic Type</label>
+                            <select class="anesthetic-type">
+                                <option value="">Select anesthetic</option>
+                                <option value="lidocaine">Lidocaine 2% with 1:100,000 Epi</option>
+                                <option value="articaine">Articaine 4% with 1:100,000 Epi</option>
+                                <option value="mepivacaine">Mepivacaine 3% Plain</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Cartridge Volume</label>
+                            <select class="cartridge-volume">
+                                <option value="1.8">1.8 ml</option>
+                                <option value="1.7">1.7 ml</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Cartridges Used</label>
+                            <input type="number" class="cartridges" min="0" max="20" step="0.5" placeholder="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="add-btn" onclick="addAnesthetic()">+ Add Another Anesthetic</button>
+            
+            <button class="calculate-btn" onclick="calculateDoses()">Calculate Doses</button>
+
+            <div id="results" class="results" style="display: none;">
+                <h2>📊 Calculation Results</h2>
+                <div class="results-grid" id="resultsGrid">
+                    <!-- Results will be dynamically generated here -->
+                </div>
+                <div id="safetyAlert"></div>
+                
+                <!-- Note Template Section -->
+                <div id="noteTemplate" style="margin-top: 40px; padding: 32px; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.95) 100%); border-radius: 16px; border: 2px solid rgba(148, 163, 184, 0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h3 style="color: #f1f5f9; font-size: 1.4rem; font-weight: 700; margin: 0;">📝 Clinical Note Template</h3>
+                        <button id="copyNoteBtn" onclick="copyNoteToClipboard()" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                            📋 Copy Note
+                        </button>
+                    </div>
+                    <div id="noteContent" style="background: rgba(51, 65, 85, 0.4); padding: 24px; border-radius: 12px; font-family: 'Courier New', monospace; font-size: 0.95rem; line-height: 1.6; color: #e2e8f0; white-space: pre-wrap; border: 1px solid rgba(148, 163, 184, 0.2);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let anestheticCount = 1;
+
+        function updateWeightLabel() {
+            const unit = document.getElementById('weightUnit').value;
+            const label = document.getElementById('weightLabel');
+            const input = document.getElementById('patientWeight');
+            const convertedDiv = document.getElementById('convertedWeight');
+            
+            if (unit === 'lb') {
+                label.textContent = 'Patient Weight (lb)';
+                input.placeholder = 'Enter weight in pounds';
+                input.max = '440'; // ~200kg
+            } else {
+                label.textContent = 'Patient Weight (kg)';
+                input.placeholder = 'Enter weight in kilograms';
+                input.max = '200';
+            }
+            
+            // Clear the converted weight display when unit changes
+            convertedDiv.style.display = 'none';
+            convertedDiv.textContent = '';
+        }
+
+        function getWeightInKg() {
+            const weight = parseFloat(document.getElementById('patientWeight').value);
+            const unit = document.getElementById('weightUnit').value;
+            const convertedDiv = document.getElementById('convertedWeight');
+            
+            if (!weight || weight <= 0) {
+                return null;
+            }
+            
+            if (unit === 'lb') {
+                const weightInKg = weight / 2.2;
+                convertedDiv.textContent = `Converted: ${weightInKg.toFixed(1)} kg`;
+                convertedDiv.style.display = 'block';
+                return weightInKg;
+            } else {
+                convertedDiv.style.display = 'none';
+                return weight;
+            }
+        }
+
+        // Anesthetic properties (per ml)
+        const anesthetics = {
+            lidocaine: {
+                name: 'Lidocaine 2%',
+                anestheticMgPerMl: 20,
+                epinephrineMgPerMl: 0.01,
+                mrdPerKg: 7.0,
+                absoluteMRD: 500
+            },
+            articaine: {
+                name: 'Articaine 4%',
+                anestheticMgPerMl: 40,
+                epinephrineMgPerMl: 0.01,
+                mrdPerKg: 7.0,
+                absoluteMRD: null // No absolute limit
+            },
+            mepivacaine: {
+                name: 'Mepivacaine 3%',
+                anestheticMgPerMl: 30,
+                epinephrineMgPerMl: 0,
+                mrdPerKg: 6.6,
+                absoluteMRD: 400
+            }
+        };
+
+        function addAnesthetic() {
+            anestheticCount++;
+            const container = document.getElementById('anestheticsContainer');
+            
+            const newSection = document.createElement('div');
+            newSection.className = 'anesthetic-section';
+            newSection.innerHTML = `
+                <div class="anesthetic-header">
+                    <h3>Anesthetic #${anestheticCount}</h3>
+                    <button class="remove-btn" onclick="removeAnesthetic(this)">Remove</button>
+                </div>
+                <div class="anesthetic-inputs">
+                    <div class="form-group">
+                        <label>Anesthetic Type</label>
+                        <select class="anesthetic-type">
+                            <option value="">Select anesthetic</option>
+                            <option value="lidocaine">Lidocaine 2% with 1:100,000 Epi</option>
+                            <option value="articaine">Articaine 4% with 1:100,000 Epi</option>
+                            <option value="mepivacaine">Mepivacaine 3% Plain</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cartridge Volume</label>
+                        <select class="cartridge-volume">
+                            <option value="1.8">1.8 ml</option>
+                            <option value="1.7">1.7 ml</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cartridges Used</label>
+                        <input type="number" class="cartridges" min="0" max="20" step="0.5" placeholder="0">
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(newSection);
+        }
+
+        function removeAnesthetic(button) {
+            if (document.querySelectorAll('.anesthetic-section').length > 1) {
+                button.closest('.anesthetic-section').remove();
+                updateAnestheticNumbers();
+            }
+        }
+
+        function updateAnestheticNumbers() {
+            const sections = document.querySelectorAll('.anesthetic-section');
+            sections.forEach((section, index) => {
+                section.querySelector('h3').textContent = `Anesthetic #${index + 1}`;
+            });
+            anestheticCount = sections.length;
+        }
+
+        function calculateDoses() {
+            const weightInKg = getWeightInKg();
+            const isCardiac = document.getElementById('cardiacStatus').value === 'cardiac';
+
+            if (!weightInKg) {
+                alert('Please enter a valid patient weight');
+                return;
+            }
+
+            // Initialize totals
+            let totals = {
+                lidocaine: 0,
+                articaine: 0,
+                mepivacaine: 0,
+                epinephrine: 0
+            };
+
+            let totalAnestheticMg = 0;
+            let usedAnesthetics = new Set();
+
+            // Calculate totals from all anesthetic sections
+            const sections = document.querySelectorAll('.anesthetic-section');
+            sections.forEach(section => {
+                const type = section.querySelector('.anesthetic-type').value;
+                const cartridges = parseFloat(section.querySelector('.cartridges').value) || 0;
+                const cartridgeVolume = parseFloat(section.querySelector('.cartridge-volume').value);
+
+                if (type && cartridges > 0) {
+                    usedAnesthetics.add(type);
+                    const anesthetic = anesthetics[type];
+                    const totalVolume = cartridges * cartridgeVolume;
+                    const anestheticAmount = anesthetic.anestheticMgPerMl * totalVolume;
+                    
+                    totals[type] += anestheticAmount;
+                    totals.epinephrine += anesthetic.epinephrineMgPerMl * totalVolume;
+                    totalAnestheticMg += anestheticAmount;
+                }
+            });
+
+            // Calculate MRDs for used anesthetics only
+            const epinephrineLimit = isCardiac ? 0.04 : 0.2;
+
+            // Generate results dynamically
+            generateResults(weightInKg, totals, usedAnesthetics, totalAnestheticMg, epinephrineLimit, isCardiac);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateResults(weightInKg, totals, usedAnesthetics, totalAnestheticMg, epinephrineLimit, isCardiac) {
+            const resultsGrid = document.getElementById('resultsGrid');
+            resultsGrid.innerHTML = '';
+
+            // Calculate the applicable MRD for safety comparison
+            let applicableMRD = Infinity;
+            let applicableMRDInfo = "";
+            
+            usedAnesthetics.forEach(type => {
+                const anesthetic = anesthetics[type];
+                const weightBasedMRD = weightInKg * anesthetic.mrdPerKg;
+                
+                // For each anesthetic, determine the effective MRD (smaller of weight-based or absolute)
+                let effectiveMRD;
+                if (anesthetic.absoluteMRD !== null) {
+                    effectiveMRD = Math.min(weightBasedMRD, anesthetic.absoluteMRD);
+                } else {
+                    effectiveMRD = weightBasedMRD;
+                }
+                
+                // Track the smallest effective MRD across all used anesthetics
+                if (effectiveMRD < applicableMRD) {
+                    applicableMRD = effectiveMRD;
+                    if (anesthetic.absoluteMRD !== null && anesthetic.absoluteMRD < weightBasedMRD) {
+                        applicableMRDInfo = `${anesthetic.name} (absolute limit)`;
+                    } else {
+                        applicableMRDInfo = `${anesthetic.name} (weight-based limit)`;
+                    }
+                }
+            });
+
+            // Check safety status
+            const anestheticOverLimit = totalAnestheticMg > applicableMRD;
+            const epiOverLimit = totals.epinephrine > epinephrineLimit;
+            const hasOverLimit = anestheticOverLimit || epiOverLimit;
+
+            // 1. Patient Weight
+            resultsGrid.innerHTML += `
+                <div class="result-card patient-weight-card">
+                    <h4>Patient Weight</h4>
+                    <div class="result-value">${weightInKg.toFixed(1)} kg</div>
+                </div>
+            `;
+
+            // 2. Applicable MRD (the limiting factor)
+            resultsGrid.innerHTML += `
+                <div class="result-card">
+                    <h4>Applicable MRD</h4>
+                    <div class="result-value">${applicableMRD.toFixed(1)} mg</div>
+                    <small style="color: #94a3b8; margin-top: 8px; display: block;">${applicableMRDInfo}</small>
+                </div>
+            `;
+
+            // 3. Total Anesthetic Amount (highlight if over limit)
+            resultsGrid.innerHTML += `
+                <div class="result-card total-anesthetic-card ${anestheticOverLimit ? 'over-limit' : ''}">
+                    <h4>Total Anesthetic Administered</h4>
+                    <div class="result-value">${totalAnestheticMg.toFixed(1)} mg</div>
+                </div>
+            `;
+
+            // 4. Individual anesthetic breakdowns (for reference)
+            usedAnesthetics.forEach(type => {
+                const anesthetic = anesthetics[type];
+                if (totals[type] > 0) {
+                    resultsGrid.innerHTML += `
+                        <div class="result-card">
+                            <h4>${anesthetic.name}</h4>
+                            <div class="result-value">${totals[type].toFixed(1)} mg</div>
+                        </div>
+                    `;
+                }
+            });
+
+            // 5. Epinephrine (show if cardiac is selected OR if epinephrine was administered)
+            if (isCardiac || totals.epinephrine > 0) {
+                resultsGrid.innerHTML += `
+                    <div class="result-card ${epiOverLimit ? 'over-limit' : ''}">
+                        <h4>Epinephrine Administered</h4>
+                        <div class="result-value">${totals.epinephrine.toFixed(3)} mg</div>
+                        <small style="color: #94a3b8; margin-top: 8px; display: block;">Limit: ${epinephrineLimit.toFixed(3)} mg</small>
+                    </div>
+                `;
+            }
+
+            // 6. Safety Status
+            resultsGrid.innerHTML += `
+                <div class="result-card ${hasOverLimit ? 'over-limit' : 'safe'}">
+                    <h4>Safety Status</h4>
+                    <div class="result-value">${hasOverLimit ? '⚠️ OVER LIMIT' : '✅ SAFE'}</div>
+                </div>
+            `;
+
+            // Detailed safety check
+            checkDetailedSafety(totalAnestheticMg, applicableMRD, totals.epinephrine, epinephrineLimit, anestheticOverLimit, epiOverLimit);
+            
+            // Generate note template
+            generateNoteTemplate(weightInKg, usedAnesthetics, totals, applicableMRD, totalAnestheticMg);
+        }
+
+        function generateNoteTemplate(weightInKg, usedAnesthetics, totals, applicableMRD, totalAnestheticMg) {
+            // Build anesthetic list
+            let anestheticList = [];
+            usedAnesthetics.forEach(type => {
+                if (totals[type] > 0) {
+                    const anesthetic = anesthetics[type];
+                    let name = anesthetic.name;
+                    if (type === 'lidocaine') name = 'Lidocaine 2% 1:100k epi';
+                    else if (type === 'articaine') name = 'Articaine 4% 1:100k epi';
+                    else if (type === 'mepivacaine') name = 'Mepivacaine 3% Plain';
+                    anestheticList.push(`${name} (${totals[type].toFixed(1)}mg)`);
+                }
+            });
+
+            // Determine absolute MRD (smallest absolute limit from used anesthetics)
+            let absoluteMRD = "N/A";
+            usedAnesthetics.forEach(type => {
+                const anesthetic = anesthetics[type];
+                if (anesthetic.absoluteMRD !== null) {
+                    if (absoluteMRD === "N/A" || anesthetic.absoluteMRD < absoluteMRD) {
+                        absoluteMRD = anesthetic.absoluteMRD;
+                    }
+                }
+            });
+
+            const noteTemplate = `Pt. Weight: ${weightInKg.toFixed(1)} kg
+Topical Benzocaine applied at injection(s) site(s)
+Injection(s) given: 
+UR: PSA, MSA, ASA, NP, GP;
+UL: PSA, MSA, ASA, NP, GP; 
+LR: IA, LB, MI
+LL: IA, LB, MI
+Negative Aspirations on all injections
+
+Anesthetic Administered: ${anestheticList.join(', ')}
+Absolute MRD: ${absoluteMRD === "N/A" ? "N/A" : absoluteMRD + " mg"}
+Pt MRD: ${applicableMRD.toFixed(1)} mg
+Total amount administered for the appointment (in mg): ${totalAnestheticMg.toFixed(1)} mg
+
+Pt Reaction: 
+
+Post-op Instructions: Patient advised that anesthetic effects may last 2-4 hours. During this time, avoid eating, drinking hot liquids, or chewing on the numb side to prevent accidental injury to soft tissues. Be cautious when speaking to avoid biting tongue or cheek. If tenderness or swelling occurs at injection site, apply ice for 15-20 minutes intermittently and take over-the-counter pain medication as directed. Contact office if unusual swelling, prolonged numbness (>6 hours), or severe pain develops. Normal activities may be resumed once numbness subsides.
+
+Student Signature:`;
+
+            document.getElementById('noteContent').textContent = noteTemplate;
+        }
+
+        function copyNoteToClipboard() {
+            const noteContent = document.getElementById('noteContent').textContent;
+            const copyBtn = document.getElementById('copyNoteBtn');
+            
+            navigator.clipboard.writeText(noteContent).then(() => {
+                // Visual feedback
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ Copied!';
+                copyBtn.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)';
+                }, 2000);
+            }).catch(err => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = noteContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ Copied!';
+                setTimeout(() => copyBtn.textContent = originalText, 2000);
+            });
+        }
+
+        function checkDetailedSafety(totalAnestheticMg, applicableMRD, totalEpinephrine, epinephrineLimit, anestheticOverLimit, epiOverLimit) {
+            const alertDiv = document.getElementById('safetyAlert');
+            let warnings = [];
+
+            if (anestheticOverLimit) {
+                warnings.push(`⚠️ Total anesthetic dose (${totalAnestheticMg.toFixed(1)}mg) exceeds applicable MRD (${applicableMRD.toFixed(1)}mg)`);
+            }
+
+            if (epiOverLimit) {
+                warnings.push(`⚠️ Epinephrine dose (${totalEpinephrine.toFixed(3)}mg) exceeds limit (${epinephrineLimit.toFixed(3)}mg)`);
+            }
+
+            if (warnings.length > 0) {
+                alertDiv.innerHTML = `<div class="warning">${warnings.join('<br>')}</div>`;
+            } else {
+                alertDiv.innerHTML = `<div class="warning safe">✅ All doses are within safe limits</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
