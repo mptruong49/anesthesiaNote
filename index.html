@@ -627,6 +627,7 @@
                                 <option value="">Select anesthetic</option>
                                 <option value="lidocaine">Lidocaine 2% with 1:100,000 Epi</option>
                                 <option value="articaine">Articaine 4% with 1:100,000 Epi</option>
+                                <option value="articaine2">Articaine 4% with 1:200,000 Epi</option>
                                 <option value="mepivacaine">Mepivacaine 3% Plain</option>
                             </select>
                         </div>
@@ -730,6 +731,13 @@
                 mrdPerKg: 7.0,
                 absoluteMRD: null // No absolute limit
             },
+            articaine2: {
+                name: 'Articaine 4%',
+                anestheticMgPerMl: 40,
+                epinephrineMgPerMl: 0.02,
+                mrdPerKg: 7.0,
+                absoluteMRD: null // No absolute limit
+            },
             mepivacaine: {
                 name: 'Mepivacaine 3%',
                 anestheticMgPerMl: 30,
@@ -757,6 +765,7 @@
                             <option value="">Select anesthetic</option>
                             <option value="lidocaine">Lidocaine 2% with 1:100,000 Epi</option>
                             <option value="articaine">Articaine 4% with 1:100,000 Epi</option>
+                            <option value="articaine2">Articaine 4% with 1:200,000 Epi</option>
                             <option value="mepivacaine">Mepivacaine 3% Plain</option>
                         </select>
                     </div>
@@ -805,6 +814,7 @@
             let totals = {
                 lidocaine: 0,
                 articaine: 0,
+                articaine2: 0,
                 mepivacaine: 0,
                 epinephrine: 0
             };
@@ -958,6 +968,7 @@
                     let name = anesthetic.name;
                     if (type === 'lidocaine') name = 'Lidocaine 2% 1:100k epi';
                     else if (type === 'articaine') name = 'Articaine 4% 1:100k epi';
+                    else if (type === 'articaine2') name = 'Articaine 4% 1:200k epi';
                     else if (type === 'mepivacaine') name = 'Mepivacaine 3% Plain';
                     anestheticList.push(`${name} (${totals[type].toFixed(1)}mg)`);
                 }
