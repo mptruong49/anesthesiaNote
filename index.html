@@ -987,14 +987,14 @@
 
             const noteTemplate = `Pt. Weight: ${weightInKg.toFixed(1)} kg
 Topical Benzocaine applied at injection(s) site(s)
-Injection(s) given: with ? needle ? gauge
+Injection(s) given:
 UR: PSA, MSA, ASA, NP, GP;
 UL: PSA, MSA, ASA, NP, GP; 
 LR: IA, LB, MI
 LL: IA, LB, MI
 Negative Aspirations on all injections
 
-Anesthetic Administered: ${anestheticList.join(', ')}
+Anesthetic Administered: ${anestheticList.join(', ')} with long/short needle 25G/27G 
 Absolute MRD: ${absoluteMRD === "N/A" ? "N/A" : absoluteMRD + " mg"}
 Pt MRD: ${patientWeightBasedMRD.toFixed(1)} mg
 Total amount administered for the appointment (in mg): ${totalAnestheticMg.toFixed(1)} mg
